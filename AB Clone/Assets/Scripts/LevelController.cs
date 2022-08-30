@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class LevelController : MonoBehaviour
     void GoToNextLevel()
     {
         Debug.Log("Go to level" + _nextLevelName);
+        SceneManager.LoadScene(_nextLevelName); 
     }
 
     bool MonstersAreAllDead()
