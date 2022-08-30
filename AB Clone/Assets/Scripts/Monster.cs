@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
+    [SerializeField] Sprite _deadSprite;
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (ShouldDieFromCollision(collision))
