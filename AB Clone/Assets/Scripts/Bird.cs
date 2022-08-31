@@ -1,81 +1,98 @@
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Generic; // you don't need this
 using UnityEngine;
 
-public class Bird : MonoBehaviour
+// Example namespace, look em up
+namespace Scripts.Enemies
 {
-    [SerializeField] float _launchForce = 500;
-    [SerializeField] float _maxDragDistance = 5;
+	public class Bird : MonoBehaviour
+	{
+		//suffix floats with f
+		//look up doubles with d
+		[SerializeField]
+		float _launchForce = 500f;
 
-    Vector2 _startPosition;
-    Rigidbody2D _rigidbody2D;
-    SpriteRenderer _spriteRenderer;
+		[SerializeField]
+		float _maxDragDistance = 5f;
 
-    void Awake()
-    {
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-    }
+		Vector2 _startPosition;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        _startPosition = _rigidbody2D.position;
-        _rigidbody2D.isKinematic = true;
-    }
+		[SerializeField]
+		Rigidbody2D _rigidbody2D;
 
-    void OnMouseDown()
-    {
-        _spriteRenderer.color = Color.red;
-    }
+		[SerializeField]
+		SpriteRenderer _spriteRenderer;
 
-    void OnMouseUp()
-    {
-        var currentPosition = _rigidbody2D.position;
-        Vector2 direction = _startPosition - currentPosition;
-        direction.Normalize();
+		void Awake()
+		{
+			//In general just set the references in editor.
+			_rigidbody2D = GetComponent<Rigidbody2D>();
+			_spriteRenderer = GetComponent<SpriteRenderer>();
+		}
 
-        _rigidbody2D.isKinematic = false;
-        _rigidbody2D.AddForce(direction * _launchForce);
+		// Start is called before the first frame update
+		void Start()
+		{
+			_startPosition = _rigidbody2D.position;
+			_rigidbody2D.isKinematic = true;
+		}
 
-        _spriteRenderer.color = Color.white;
-    }
+		void OnMouseDown()
+		{
+			_spriteRenderer.color = Color.red;
+		}
 
-    void OnMouseDrag()
-    {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 desiredPosition = mousePosition;
+		void OnMouseUp()
+		{
+			var currentPosition = _rigidbody2D.position;
+			Vector2 direction = _startPosition - currentPosition;
+			direction.Normalize();
 
-        float distance = Vector2.Distance(desiredPosition, _startPosition);
-        if (distance > _maxDragDistance)
-        {
-            Vector2 direction = desiredPosition - _startPosition;
-            direction.Normalize();
-            desiredPosition = _startPosition + (direction * _maxDragDistance);
-        }
+			_rigidbody2D.isKinematic = false;
+			_rigidbody2D.AddForce(direction * _launchForce);
 
-        if (desiredPosition.x > _startPosition.x)
-            desiredPosition.x = _startPosition.x;
+			_spriteRenderer.color = Color.white;
+		}
 
-        _rigidbody2D.position = desiredPosition;
-    }
+		void OnMouseDrag()
+		{
+			Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			Vector2 desiredPosition = mousePosition;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+			float distance = Vector2.Distance(desiredPosition, _startPosition);
+			if (distance > _maxDragDistance)
+			{
+				Vector2 direction = desiredPosition - _startPosition;
+				direction.Normalize();
+				desiredPosition = _startPosition + direction * _maxDragDistance;
+			}
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        StartCoroutine(ResetAfterDelay());
-    }
+			if (desiredPosition.x > _startPosition.x)
+				desiredPosition.x = _startPosition.x;
 
-    IEnumerator ResetAfterDelay()
-    {
-        yield return new WaitForSeconds(3);
-        _rigidbody2D.position = _startPosition;
-        _rigidbody2D.isKinematic = true;
-        _rigidbody2D.velocity = Vector2.zero;
-    }
+			_rigidbody2D.position = desiredPosition;
+		}
+
+		// Update is called once per frame
+		//delete this
+		void Update()
+		{
+
+		}
+
+		void OnCollisionEnter2D(Collision2D collision)
+		{
+			//don't use coroutines
+			StartCoroutine(ResetAfterDelay());
+		}
+
+		IEnumerator ResetAfterDelay()
+		{
+			//this is a float.
+			yield return new WaitForSeconds(3);
+			_rigidbody2D.position = _startPosition;
+			_rigidbody2D.isKinematic = true;
+			_rigidbody2D.velocity = Vector2.zero;
+		}
+	}
 }
